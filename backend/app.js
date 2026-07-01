@@ -6,6 +6,9 @@ import cors from "cors";
 import registerDonorRoutes from "./src/routes/registerDonor.js"
 import loginDonorRoutes from "./src/routes/loginDonor.js"
 
+import registerAdminRoutes from "./src/routes/registerAdmin.js"
+import loginAdminRoutes from "./src/routes/loginAdmin.js"
+
 // Logout
 import logoutRoutes from "./src/routes/logout.js";
 
@@ -34,6 +37,10 @@ app.use(express.json());
 // Donors
 app.use("/api/registerDonor", registerDonorRoutes);
 app.use("/api/loginDonor", loginDonorRoutes)
+
+// Admins
+app.use("/api/registerAdmin", registerAdminRoutes);
+app.use("/api/loginAdmin", loginAdminRoutes)
 
 // Logout
 app.use("/api/logout", validateAuthCookie(["Donor"]), logoutRoutes);

@@ -1,13 +1,13 @@
-import donorModel from "../models/donors.js";
+import adminModel from "../models/admins.js";
 
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 
 import { config } from "../../config.js";
 
-const loginDonorController = {};
+const loginAdminController = {};
 
-loginDonorController.login = async (req, res) => {
+loginAdminController.login = async (req, res) => {
   const { email, password } = req.body;
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -17,46 +17,46 @@ loginDonorController.login = async (req, res) => {
   }
 
   try {
-    const donorFound = await donorModel.findOne({ email });
+    const adminFound = await adminModel.findOne({ email });
 
     // Si no existe el correo en la base de datos
-    if (!donorFound) {
-      return res.status(400).json({ message: "Donor not found" });
+    if (!adminFound) {
+      return res.status(400).json({ message: "Admin not found" });
     }
 
     // Verificar si el usuario está bloqueado
-    if (donorFound.timeOut && donorFound.timeOut > Date.now()) {
+    if (adminFound.timeOut && adminFound.timeOut > Date.now()) {
       return res.status(403).json({ message: "Cuenta bloqueada" });
     }
 
     // Validar la contraseña
-    const isMatch = await bcrypt.compare(password, donorFound.password);
+    const isMatch = await bcrypt.compare(password, adminFound.password);
 
     if (!isMatch) {
-      donorFound.loginAttemps = (donorFound.loginAttemps || 0) + 1;
+      adminFound.loginAttemps = (adminFound.loginAttemps || 0) + 1;
 
       // Si llega a 5 intentos fallidos se bloquea la cuenta
-      if (donorFound.loginAttemps >= 5) {
-        donorFound.timeOut = Date.now() + 5 * 60 * 1000;
-        donorFound.loginAttemps = 0;
+      if (adminFound.loginAttemps >= 5) {
+        adminFound.timeOut = Date.now() + 5 * 60 * 1000;
+        adminFound.loginAttemps = 0;
 
-        await donorFound.save();
+        await adminFound.save();
 
         return res.status(403).json({
           message: "Cuenta bloqueada por multiples intentos fallidos",
         });
       }
 
-      await donorFound.save();
+      await adminFound.save();
 
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    donorFound.loginAttemps = 0;
-    donorFound.timeOut = null;
+    adminFound.loginAttemps = 0;
+    adminFound.timeOut = null;
 
     const token = jsonwebtoken.sign(
-      { id: donorFound._id, userType: "Donor" },
+      { id: adminFound._id, userType: "Donor" },
       config.JWT.secret,
       { expiresIn: "30d" },
     );
@@ -70,4 +70,4 @@ loginDonorController.login = async (req, res) => {
   }
 };
 
-export default loginDonorController;
+export default loginAdminController;
