@@ -7,7 +7,7 @@
         transactionId
   */
 
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 const donationsSchema = new Schema(
   {
@@ -15,21 +15,18 @@ const donationsSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Donors",
     },
-    email: {
-      type: String,
-    },
-    password: {
-      type: String,
-    },
-    isVerified: {
-      type: Boolean,
-    },
-    loginAttemps: {
+    amount: {
       type: Number,
     },
-    timeOut: {
+    donationDate: {
       type: Date,
     },
+    paymentStatus: {
+      type: String,
+    },
+    transactionId: {
+      type: String,
+    }
   },
   {
     timestamps: true,

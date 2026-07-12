@@ -9,6 +9,8 @@ import loginDonorRoutes from "./src/routes/loginDonor.js"
 import registerAdminRoutes from "./src/routes/registerAdmin.js"
 import loginAdminRoutes from "./src/routes/loginAdmin.js"
 
+import donationRoutes from "./src/routes/donations.js"
+
 // Logout
 import logoutRoutes from "./src/routes/logout.js";
 
@@ -38,14 +40,17 @@ app.use(express.json());
 app.use("/api/registerDonor", registerDonorRoutes);
 app.use("/api/loginDonor", loginDonorRoutes)
 
+// Donatios
+app.use("/api/donations", donationRoutes)
+
 // Admins
 app.use("/api/registerAdmin", registerAdminRoutes);
 app.use("/api/loginAdmin", loginAdminRoutes)
 
 // Logout
-app.use("/api/logout", validateAuthCookie(["Donor"]), logoutRoutes);
+app.use("/api/logout", validateAuthCookie(["Donor", "Admin"]), logoutRoutes);
 
 // Wompi
-app.use("/api/wompi", validateAuthCookie(["Donor"]),  wompiRoutes);
+app.use("/api/wompi", validateAuthCookie(["Donor"]), wompiRoutes);
 
 export default app;

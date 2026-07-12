@@ -56,7 +56,7 @@ loginAdminController.login = async (req, res) => {
     adminFound.timeOut = null;
 
     const token = jsonwebtoken.sign(
-      { id: adminFound._id, userType: "Donor" },
+      { id: adminFound._id, userType: "Admin" },
       config.JWT.secret,
       { expiresIn: "30d" },
     );
